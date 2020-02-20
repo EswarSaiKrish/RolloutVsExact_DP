@@ -5,6 +5,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import random
 from mpl_toolkits.mplot3d import axes3d, Axes3D #<-- Note the capitalization!
 
 
@@ -45,8 +46,10 @@ class Driver:
         r = status[status != 2]
         R = np.mean(r)
         for i in range(k+1,N,1):
-            self.pm[i] = (self.gamma*pf[i]) + ((1-self.gamma)*R)
+            self.pm[i] = float((self.gamma*pf[i]) + ((1-self.gamma)*R))
             self.pm_dum[i]=self.pm[i]
+            print( float((self.gamma*pf[i]) + ((1-self.gamma)*R)),self.pm[i],self.pm_dum[i],self.pf[i])
+
 
     def get_prob(self):
         return self.pm_dum
@@ -126,13 +129,20 @@ print('Cost of every spot is:\n', c)
 #f = F[:i+1].copy()
 # probability of space being free
 pf = np.random.rand(N)
+pf_dum=pf
+#pf = np.random.uniform(0,1,N)
+#pf=random.random(N)
 #pf = PF[:i+1].copy()
 print('Probability of every spot being free is:\n', pf)
+fig = plt.figure()
+#plt.plot(pm_dum)
+plt.plot(pf)
+plt.show()
 # space actually free or not
 f = np.zeros_like(pf,int)
-f[np.where(pf>0.3)]=1
+f[np.where(pf>0.5)]=1
 f[np.argmin(c)] = 1
-pf[np.argmin(c)] = 0.1
+#pf[np.argmin(c)] = 0.1
 data = pd.concat([pd.DataFrame(c[:-1]),pd.DataFrame(pf),pd.DataFrame(f)],axis=1)
 print('Whether every spot is actually free or not:\n', f)
 driver = Driver(pf,f,c,N,gamma)
@@ -147,8 +157,8 @@ print(pm_dum)
 #plt.plot(np.array([*myN,N]),c)
 #plt.show()
 fig = plt.figure()
-#plt.plot(f)
 plt.plot(pm_dum)
+plt.plot(pf_dum)
 plt.show()
 #data
 
